@@ -8,10 +8,11 @@ A free static live TV player for Azerbaijani and Turkish public IPTV streams.
 - Plays HLS / M3U8 streams in the browser
 - Uses hls.js for browsers that do not support HLS natively
 - Supports:
-  - Azerbaijan country playlist
-  - Turkiye country playlist
-  - Azerbaijani-language playlist
-  - Turkish-language playlist
+  - Azerbaijan · Reliable curated HTTPS list
+  - Azerbaijan country playlist from IPTV-org
+  - Turkiye country playlist from IPTV-org
+  - Azerbaijani-language playlist from IPTV-org
+  - Turkish-language playlist from IPTV-org
   - Combined Azerbaijan + Turkiye mode
 - Includes search
 - Includes filters
@@ -26,21 +27,28 @@ A free static live TV player for Azerbaijani and Turkish public IPTV streams.
 
 ## Sources
 
-This app uses public/open IPTV-org playlist sources:
+This app uses public/open stream sources:
 
+- Azerbaijan reliable replacement streams referenced in IPTV-org issue #18880
 - Azerbaijan country playlist: https://iptv-org.github.io/iptv/countries/az.m3u
 - Turkiye country playlist: https://iptv-org.github.io/iptv/countries/tr.m3u
 - Azerbaijani language playlist: https://iptv-org.github.io/iptv/languages/aze.m3u
 - Turkish language playlist: https://iptv-org.github.io/iptv/languages/tur.m3u
 - hls.js: https://github.com/video-dev/hls.js/
 
+## Important note
+
+The Azerbaijan source in IPTV-org can be unreliable. v1.1 adds a separate `Azərbaycan · Reliable` source using a small curated HTTPS list.
+
+Only HTTPS HLS streams are included in the reliable list because GitHub Pages is HTTPS. Plain HTTP streams may be blocked by browsers as mixed content.
+
 ## Project structure
 
 ```text
 az-turk-tv/
   index.html
-  style-v1.css
-  app-v1.js
+  style-v1-1.css
+  app-v1-1.js
   README.md
   icon.svg
   manifest.json
@@ -49,21 +57,10 @@ az-turk-tv/
 
 ## Deploy on GitHub Pages
 
-1. Create a public GitHub repository called `az-turk-tv`.
-2. Upload all files to the root of the repository.
-3. Go to **Settings**.
-4. Go to **Pages**.
-5. Select:
-   - Source: `Deploy from a branch`
-   - Branch: `main`
-   - Folder: `/root`
-6. Save.
-
-Your app will be available at:
-
-```text
-https://yourusername.github.io/az-turk-tv/
-```
+1. Upload all files to the root of your `az-turk-tv` repository.
+2. Commit the changes.
+3. Wait for GitHub Pages to redeploy.
+4. Hard refresh once.
 
 ## Notes
 
