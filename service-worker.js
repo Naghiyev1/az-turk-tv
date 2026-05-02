@@ -1,9 +1,9 @@
-const CACHE_NAME = "az-turk-tv-v1";
+const CACHE_NAME = "az-turk-tv-v1-1";
 const APP_SHELL = [
   "./",
   "./index.html",
-  "./style-v1.css",
-  "./app-v1.js",
+  "./style-v1-1.css",
+  "./app-v1-1.js",
   "./icon.svg",
   "./manifest.json"
 ];
