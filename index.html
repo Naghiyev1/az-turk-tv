@@ -13,7 +13,7 @@
   <link rel="icon" href="icon.svg" type="image/svg+xml" />
   <link rel="manifest" href="manifest.json" />
 
-  <link rel="stylesheet" href="./style-v1-1.css?v=1.1" />
+  <link rel="stylesheet" href="./style-v1-2.css?v=1.2" />
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 </head>
 <body>
@@ -36,6 +36,13 @@
     <section class="cinema-panel" aria-label="Live TV player">
       <div class="screen-frame">
         <video id="videoPlayer" controls playsinline></video>
+        <iframe
+          id="youtubePlayer"
+          class="youtube-player"
+          title="YouTube live player"
+          allow="autoplay; encrypted-media; picture-in-picture"
+          allowfullscreen
+        ></iframe>
         <div class="screen-reflection"></div>
       </div>
 
@@ -56,7 +63,8 @@
 
       <select id="sourceSelect" aria-label="Mənbə seç">
         <option value="combined" selected>Azərbaycan + Türkiyə</option>
-        <option value="azReliable">Azərbaycan · Reliable</option>
+        <option value="azYoutube">Azərbaycan · YouTube Live</option>
+        <option value="azReliable">Azərbaycan · IPTV/HLS Test</option>
         <option value="az">Azərbaycan · IPTV-org</option>
         <option value="tr">Türkiyə · IPTV-org</option>
         <option value="aze">Azərbaycan dili · IPTV-org</option>
@@ -101,6 +109,6 @@
     <main id="channelsGrid" class="channels-grid" aria-live="polite"></main>
   </main>
 
-  <script src="./app-v1-1.js?v=1.1"></script>
+  <script src="./app-v1-2.js?v=1.2"></script>
 </body>
 </html>
