@@ -1,25 +1,72 @@
-const AZERBAIJAN_RELIABLE_CHANNELS = [
+const AZERBAIJAN_YOUTUBE_CHANNELS = [
+  {
+    id: "youtube-aztv",
+    name: "AZTV",
+    country: "Azerbaijan",
+    group: "YouTube Live",
+    category: "General",
+    tags: "Azerbaijan Official YouTube Live General",
+    logo: "",
+    youtubeChannelId: "UCVf7OL0jKiO1OMHN_qaNf0w",
+    source: "Azərbaycan · YouTube Live"
+  },
+  {
+    id: "youtube-ictimai-tv",
+    name: "İctimai TV",
+    country: "Azerbaijan",
+    group: "YouTube Live",
+    category: "General",
+    tags: "Azerbaijan Official YouTube Live General News",
+    logo: "",
+    youtubeChannelId: "UCCYhaH52lUEmfUjX-_OBAHg",
+    source: "Azərbaycan · YouTube Live"
+  },
+  {
+    id: "youtube-cbc-azerbaijan",
+    name: "CBC TV Azerbaijan",
+    country: "Azerbaijan",
+    group: "YouTube Live",
+    category: "News",
+    tags: "Azerbaijan Official YouTube Live CBC News",
+    logo: "",
+    youtubeChannelId: "UC0tSbzhYGtLtm8V58t-GT4g",
+    source: "Azərbaycan · YouTube Live"
+  },
+  {
+    id: "youtube-baku-tv",
+    name: "Baku TV",
+    country: "Azerbaijan",
+    group: "YouTube Live",
+    category: "News",
+    tags: "Azerbaijan YouTube Live News Baku TV",
+    logo: "",
+    youtubeChannelId: "UCINwqO8Scgq___xJAVjfn7g",
+    source: "Azərbaycan · YouTube Live"
+  },
+  {
+    id: "youtube-cbc-sport-live",
+    name: "CBC Sport LIVE",
+    country: "Azerbaijan",
+    group: "YouTube Live",
+    category: "Sports",
+    tags: "Azerbaijan YouTube Live Sports CBC Sport",
+    logo: "",
+    youtubeChannelId: "UCwS4U80zng72tL7cLLYeaAQ",
+    source: "Azərbaycan · YouTube Live"
+  }
+];
+
+const AZERBAIJAN_HLS_TEST_CHANNELS = [
   {
     id: "aznews-socialsmart",
     name: "AZ News",
     country: "Azerbaijan",
     group: "News",
     category: "News",
-    tags: "Azerbaijan News Reliable HTTPS",
+    tags: "Azerbaijan News HLS Test HTTPS",
     logo: "",
     url: "https://swow1.socialsmart.tv/aznews/smil:aznews.smil/playlist.m3u8",
-    source: "Azerbaijan · Reliable"
-  },
-  {
-    id: "aznews-socialsmart-720p",
-    name: "AZ News 720p",
-    country: "Azerbaijan",
-    group: "News",
-    category: "News",
-    tags: "Azerbaijan News Reliable HTTPS",
-    logo: "",
-    url: "https://edge1.socialsmart.tv/aznews/smil/aznews/720p/chunks.m3u8",
-    source: "Azerbaijan · Reliable"
+    source: "Azərbaycan · IPTV/HLS Test"
   },
   {
     id: "cbc-azerbaijan-odtv",
@@ -27,10 +74,10 @@ const AZERBAIJAN_RELIABLE_CHANNELS = [
     country: "Azerbaijan",
     group: "General",
     category: "General",
-    tags: "Azerbaijan General CBC Reliable HTTPS",
+    tags: "Azerbaijan General CBC HLS Test HTTPS",
     logo: "",
     url: "https://edge02.odtv.az/o1/cbc/playlist.m3u8",
-    source: "Azerbaijan · Reliable"
+    source: "Azərbaycan · IPTV/HLS Test"
   },
   {
     id: "idman-tv-odtv",
@@ -38,10 +85,10 @@ const AZERBAIJAN_RELIABLE_CHANNELS = [
     country: "Azerbaijan",
     group: "Sports",
     category: "Sports",
-    tags: "Azerbaijan Sports Idman Reliable HTTPS",
+    tags: "Azerbaijan Sports Idman HLS Test HTTPS",
     logo: "",
     url: "https://edge02.odtv.az/o7/idman/playlist.m3u8",
-    source: "Azerbaijan · Reliable"
+    source: "Azərbaycan · IPTV/HLS Test"
   },
   {
     id: "show-plus-bozztv",
@@ -49,10 +96,10 @@ const AZERBAIJAN_RELIABLE_CHANNELS = [
     country: "Azerbaijan",
     group: "General",
     category: "General",
-    tags: "Azerbaijan General Show Plus Reliable HTTPS",
+    tags: "Azerbaijan General Show Plus HLS Test HTTPS",
     logo: "",
     url: "https://glb.bozztv.com/glb/ssh101/showplus/index.m3u8",
-    source: "Azerbaijan · Reliable"
+    source: "Azərbaycan · IPTV/HLS Test"
   }
 ];
 
@@ -60,12 +107,17 @@ const SOURCES = {
   combined: {
     label: "Azərbaycan + Türkiyə",
     type: "combined",
-    sources: ["azReliable", "tr", "tur"]
+    sources: ["azYoutube", "tr", "tur"]
+  },
+  azYoutube: {
+    label: "Azərbaycan · YouTube Live",
+    type: "custom",
+    channels: AZERBAIJAN_YOUTUBE_CHANNELS
   },
   azReliable: {
-    label: "Azərbaycan · Reliable",
+    label: "Azərbaycan · IPTV/HLS Test",
     type: "custom",
-    channels: AZERBAIJAN_RELIABLE_CHANNELS
+    channels: AZERBAIJAN_HLS_TEST_CHANNELS
   },
   az: {
     label: "Azərbaycan · IPTV-org",
@@ -96,6 +148,8 @@ const searchInput = document.getElementById("searchInput");
 const sourceSelect = document.getElementById("sourceSelect");
 const searchButton = document.getElementById("searchButton");
 const videoPlayer = document.getElementById("videoPlayer");
+const youtubePlayer = document.getElementById("youtubePlayer");
+const screenFrame = document.querySelector(".screen-frame");
 const currentChannel = document.getElementById("currentChannel");
 const currentMeta = document.getElementById("currentMeta");
 const playerLogo = document.getElementById("playerLogo");
@@ -152,7 +206,7 @@ async function loadChannels() {
         : await loadM3USource(selectedSource);
 
     channels = applyFilters(parsedChannels)
-      .filter(channel => channel.url)
+      .filter(channel => channel.url || channel.youtubeChannelId)
       .filter(removeDuplicateStreams)
       .slice(0, 260);
 
@@ -295,7 +349,11 @@ function inferCountryFromSource(sourceLabel) {
 }
 
 function removeDuplicateStreams(channel, index, array) {
-  return array.findIndex(item => item.url === channel.url) === index;
+  const currentKey = channel.youtubeChannelId ? `youtube-${channel.youtubeChannelId}` : channel.url;
+  return array.findIndex(item => {
+    const itemKey = item.youtubeChannelId ? `youtube-${item.youtubeChannelId}` : item.url;
+    return itemKey === currentKey;
+  }) === index;
 }
 
 function renderChannels(channelsToRender) {
@@ -357,6 +415,14 @@ function playChannel(channel) {
   statusText.textContent = `${channel.name} açılır...`;
   destroyHls();
 
+  if (channel.youtubeChannelId) {
+    playYouTubeChannel(channel);
+    return;
+  }
+
+  screenFrame.classList.remove("youtube-mode");
+  youtubePlayer.removeAttribute("src");
+
   if (window.Hls && Hls.isSupported() && channel.url.includes(".m3u8")) {
     hlsInstance = new Hls({
       enableWorker: true,
@@ -383,6 +449,26 @@ function playChannel(channel) {
   videoPlayer.src = channel.url;
   startPlayback(channel);
 }
+
+
+function playYouTubeChannel(channel) {
+  videoPlayer.pause();
+  videoPlayer.removeAttribute("src");
+  videoPlayer.load();
+
+  screenFrame.classList.add("youtube-mode");
+  youtubePlayer.src = `https://www.youtube.com/embed/live_stream?channel=${encodeURIComponent(channel.youtubeChannelId)}&autoplay=1&mute=0&playsinline=1`;
+
+  currentPlayingChannel = channel;
+  updatePlayerChannel(channel);
+  saveRecentlyWatched(channel);
+  statusText.textContent = `YouTube Live açıldı: ${channel.name}`;
+
+  if (activeFilter === "__recent") {
+    renderRecentlyWatchedChannels();
+  }
+}
+
 
 function startPlayback(channel) {
   videoPlayer.play()
@@ -430,6 +516,8 @@ function stopCurrentChannel() {
   destroyHls();
   videoPlayer.removeAttribute("src");
   videoPlayer.load();
+  youtubePlayer.removeAttribute("src");
+  screenFrame.classList.remove("youtube-mode");
 
   currentPlayingChannel = null;
   currentChannel.textContent = "Kanal seçilməyib";
