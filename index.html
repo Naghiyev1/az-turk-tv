@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>AZ Türk TV</title>
+  <meta
+    name="description"
+    content="Azərbaycan və Türkiyə TV kanalları üçün pulsuz web TV player."
+  />
+  <meta name="theme-color" content="#07111f" />
+  <link rel="icon" href="icon.svg" type="image/svg+xml" />
+  <link rel="manifest" href="manifest.json" />
+
+  <link rel="stylesheet" href="./style-v1.css?v=1" />
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+</head>
+<body>
+  <main class="app-shell">
+    <header class="hero">
+      <section>
+        <p class="eyebrow">Azərbaycan + Türkiyə · public live TV</p>
+        <h1>AZ Türk TV</h1>
+        <p class="subtitle">
+          Azərbaycan və Türkiyə kanallarını brauzerdə izlə. Pulsuz, backend yoxdur,
+          GitHub Pages ilə işləyir.
+        </p>
+      </section>
+
+      <button id="themeToggle" class="theme-toggle" type="button" aria-label="Tema dəyiş">
+        Cinema Mode
+      </button>
+    </header>
+
+    <section class="cinema-panel" aria-label="Live TV player">
+      <div class="screen-frame">
+        <video id="videoPlayer" controls playsinline></video>
+        <div class="screen-reflection"></div>
+      </div>
+
+      <div class="player-bar">
+        <div id="playerLogo" class="player-logo">TV</div>
+        <div class="now-playing">
+          <strong id="currentChannel">Kanal seçilməyib</strong>
+          <span id="currentMeta">İzləmək üçün kanal seç</span>
+        </div>
+
+        <button id="playerFavoriteButton" class="icon-button" type="button" disabled aria-label="Favoritə əlavə et">★</button>
+        <button id="stopButton" class="stop-button" type="button" disabled>Stop</button>
+      </div>
+    </section>
+
+    <section class="controls" aria-label="TV controls">
+      <input id="searchInput" type="search" placeholder="Kanal, ölkə, kateqoriya axtar..." />
+
+      <select id="sourceSelect" aria-label="Mənbə seç">
+        <option value="combined" selected>Azərbaycan + Türkiyə</option>
+        <option value="az">Azərbaycan · IPTV-org</option>
+        <option value="tr">Türkiyə · IPTV-org</option>
+        <option value="aze">Azərbaycan dili · IPTV-org</option>
+        <option value="tur">Türk dili · IPTV-org</option>
+      </select>
+
+      <button id="searchButton" type="button">Axtar</button>
+    </section>
+
+    <section class="filter-pills" aria-label="Filtrlər">
+      <button class="pill active" type="button" data-filter="">Hamısı</button>
+      <button class="pill" type="button" data-filter="__favorites">Favoritlər</button>
+      <button class="pill" type="button" data-filter="__recent">Son baxılanlar</button>
+      <button class="pill" type="button" data-filter="news">Xəbər</button>
+      <button class="pill" type="button" data-filter="general">Ümumi</button>
+      <button class="pill" type="button" data-filter="music">Musiqi</button>
+      <button class="pill" type="button" data-filter="sports">İdman</button>
+      <button class="pill" type="button" data-filter="kids">Uşaq</button>
+      <button class="pill" type="button" data-filter="religious">Dini</button>
+    </section>
+
+    <div class="status-bar">
+      <span id="statusText">Kanallar yüklənir...</span>
+      <strong id="activeFilterLabel">Azərbaycan + Türkiyə</strong>
+    </div>
+
+    <section class="stats-strip" aria-label="Statistika">
+      <div>
+        <strong id="channelCount">0</strong>
+        <span>kanal</span>
+      </div>
+      <div>
+        <strong id="favoriteCount">0</strong>
+        <span>favorit</span>
+      </div>
+      <div>
+        <strong>AZ/TR</strong>
+        <span>region</span>
+      </div>
+    </section>
+
+    <main id="channelsGrid" class="channels-grid" aria-live="polite"></main>
+  </main>
+
+  <script src="./app-v1.js?v=1"></script>
+</body>
+</html>
