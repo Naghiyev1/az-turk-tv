@@ -1,8 +1,71 @@
+const AZERBAIJAN_RELIABLE_CHANNELS = [
+  {
+    id: "aznews-socialsmart",
+    name: "AZ News",
+    country: "Azerbaijan",
+    group: "News",
+    category: "News",
+    tags: "Azerbaijan News Reliable HTTPS",
+    logo: "",
+    url: "https://swow1.socialsmart.tv/aznews/smil:aznews.smil/playlist.m3u8",
+    source: "Azerbaijan · Reliable"
+  },
+  {
+    id: "aznews-socialsmart-720p",
+    name: "AZ News 720p",
+    country: "Azerbaijan",
+    group: "News",
+    category: "News",
+    tags: "Azerbaijan News Reliable HTTPS",
+    logo: "",
+    url: "https://edge1.socialsmart.tv/aznews/smil/aznews/720p/chunks.m3u8",
+    source: "Azerbaijan · Reliable"
+  },
+  {
+    id: "cbc-azerbaijan-odtv",
+    name: "CBC Azerbaijan",
+    country: "Azerbaijan",
+    group: "General",
+    category: "General",
+    tags: "Azerbaijan General CBC Reliable HTTPS",
+    logo: "",
+    url: "https://edge02.odtv.az/o1/cbc/playlist.m3u8",
+    source: "Azerbaijan · Reliable"
+  },
+  {
+    id: "idman-tv-odtv",
+    name: "İdman TV",
+    country: "Azerbaijan",
+    group: "Sports",
+    category: "Sports",
+    tags: "Azerbaijan Sports Idman Reliable HTTPS",
+    logo: "",
+    url: "https://edge02.odtv.az/o7/idman/playlist.m3u8",
+    source: "Azerbaijan · Reliable"
+  },
+  {
+    id: "show-plus-bozztv",
+    name: "Show Plus",
+    country: "Azerbaijan",
+    group: "General",
+    category: "General",
+    tags: "Azerbaijan General Show Plus Reliable HTTPS",
+    logo: "",
+    url: "https://glb.bozztv.com/glb/ssh101/showplus/index.m3u8",
+    source: "Azerbaijan · Reliable"
+  }
+];
+
 const SOURCES = {
   combined: {
     label: "Azərbaycan + Türkiyə",
     type: "combined",
-    sources: ["az", "tr", "aze", "tur"]
+    sources: ["azReliable", "tr", "tur"]
+  },
+  azReliable: {
+    label: "Azərbaycan · Reliable",
+    type: "custom",
+    channels: AZERBAIJAN_RELIABLE_CHANNELS
   },
   az: {
     label: "Azərbaycan · IPTV-org",
@@ -84,7 +147,9 @@ async function loadChannels() {
   try {
     const parsedChannels = selectedSource.type === "combined"
       ? await loadCombinedSources(selectedSource.sources)
-      : await loadM3USource(selectedSource);
+      : selectedSource.type === "custom"
+        ? selectedSource.channels
+        : await loadM3USource(selectedSource);
 
     channels = applyFilters(parsedChannels)
       .filter(channel => channel.url)
@@ -108,6 +173,10 @@ async function loadCombinedSources(sourceKeys) {
   const results = await Promise.all(
     sourceKeys.map(key => {
       const source = SOURCES[key];
+
+      if (source?.type === "custom") {
+        return Promise.resolve(source.channels || []);
+      }
 
       return loadM3USource(source).catch(error => {
         console.warn(`Source failed: ${source?.label || key}`, error);
