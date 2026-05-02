@@ -502,3 +502,30 @@ select:focus {
     border-radius: 14px;
   }
 }
+
+
+/* v1.2 YouTube fallback player */
+
+.youtube-player {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  max-height: 68vh;
+  display: none;
+  border: 0;
+  border-radius: 18px;
+  background: #000;
+}
+
+.screen-frame.youtube-mode video {
+  display: none;
+}
+
+.screen-frame.youtube-mode .youtube-player {
+  display: block;
+}
+
+@media (max-width: 440px) {
+  .youtube-player {
+    border-radius: 14px;
+  }
+}
